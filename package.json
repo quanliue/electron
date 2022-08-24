@@ -1,0 +1,144 @@
+{
+  "name": "electron-react",
+  "version": "0.1.0",
+  "private": true,
+  "main": "public/electron.js",
+  "homepage": "./",
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^0.27.2",
+    "babel-plugin-preval": "^5.1.0",
+    "bootstrap": "^5.2.0",
+    "cross-env": "^7.0.3",
+    "electron-is-dev": "^2.0.0",
+    "finnhub": "^1.2.15",
+    "fs": "0.0.1-security",
+    "fs-react": "0.0.4",
+    "lodash": "^4.17.21",
+    "querystring-es3": "^0.2.1",
+    "react": "^18.2.0",
+    "react-bootstrap": "^2.5.0",
+    "react-bootstrap-range-slider": "^3.0.8",
+    "react-dom": "^18.2.0",
+    "react-redux": "^8.0.2",
+    "react-scripts": "5.0.1",
+    "redux": "^4.2.0",
+    "styled-components": "^5.3.5",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "start-electron": "set ELECTRON_START_URL=http://localhost:3000 && electron .",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "dev": "concurrently -k \"cross-env BROWSER=none npm start\" \"npm:electron\"",
+    "electron": "wait-on tcp:3000 && electron .",
+    "electron:build": "npm build && electron-builder -c.extraMetadata.main=build/electron.js",
+    "package": "electron-builder build --win -c.extraMetadata.main=build/electron.js --publish never",
+    "make-mac": "react-scripts build && electron-forge make --platform darwin",
+    "make-linux": "react-scripts build && electron-forge make --platform linux",
+    "make": "react-scripts build && electron-forge make"
+  },
+  "build": {
+    "mac": {
+      "publish": {
+        "provider": "github",
+        "owner": "Github Owner",
+        "repo": "Repository Name",
+        "private": true,
+        "token": ""
+      }
+    },
+    "win": {
+      "publish": {
+        "provider": "github",
+        "owner": "Github Owner",
+        "repo": "Repository Name",
+        "private": true,
+        "token": ""
+      }
+    },
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "publish": {
+      "provider": "github",
+      "private": true,
+      "owner": "Github Owner"
+    }
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "stock_trading_app"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {
+            "name": "stock_trading_app"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {
+            "name": "stock_trading_app"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-dmg",
+          "config": {
+            "name": "stock_trading_app",
+            "format": "ULFO"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin",
+            "linux",
+            "win32"
+          ]
+        }
+      ]
+    }
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.63",
+    "@electron-forge/maker-deb": "^6.0.0-beta.63",
+    "@electron-forge/maker-dmg": "^6.0.0-beta.63",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.63",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.63",
+    "@electron-forge/maker-zip": "^6.0.0-beta.63",
+    "concurrently": "^7.3.0",
+    "electron": "^20.0.2",
+    "electron-webpack": "^2.8.2",
+    "wait-on": "^6.0.1"
+  }
+}
