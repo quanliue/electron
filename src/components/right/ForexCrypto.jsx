@@ -10,6 +10,9 @@ import {
 } from 'react-bootstrap';
 import DropdownItem from 'react-bootstrap/esm/DropdownItem';
 import { CryptoList, ForexList } from '../../constants/const';
+// @ts-ignore
+// import yahooFinance from 'yahoo-finance';
+
 /**
 * @author
 * @class ForexCrypto

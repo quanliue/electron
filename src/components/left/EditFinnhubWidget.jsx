@@ -7,6 +7,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import { getSymbols } from '../../redux/actions';
 import Loading from '../Loading';
+import { saveAPIKey } from '../../constants/storage';
 
 
 /**
@@ -70,7 +71,9 @@ class EditFinnhub extends Component {
 
   onChangeAPIKey = (e) => {
     e.preventDefault();
-
+    
+    saveAPIKey(e.target.value);
+    
     this.setState({
       apiKey: e.target.value
     })

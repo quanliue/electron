@@ -15,7 +15,8 @@ const main = store => next => action => {
       .then((res) => {
         dispatch({
           type: FINNHUB_GET_SYMBOLS_SUCCESS,
-          payload: res
+          payload: res,
+          apiKey: action.payload.apiKey
         })
       })
       .catch((err) => {

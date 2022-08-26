@@ -32,7 +32,7 @@ class LeftPage extends Component {
     return (
       <Fragment>
         <FullHeightDiv>
-          <div className="wifiTab d-flex flex-column">
+          <div className="wifiTab d-flex flex-column" style={{height: '300px'}}>
             <Tabs
               id="wifi-timezone-tabs"
               activeKey={this.state.activeKey}

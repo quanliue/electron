@@ -9,7 +9,6 @@ var Services = {
       axios.get(
         `https://finnhub.io/api/v1/stock/symbol?exchange=${symbol}&token=${finnhubtoken}`
       ).then(resp => {
-        console.log("Get symbols111 =>", resp.data);
         let symbols = [];
         if (resp.data && resp.data.length > 0 )
         {

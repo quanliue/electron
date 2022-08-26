@@ -10,6 +10,9 @@ import {
 } from 'react-bootstrap';
 import DropdownItem from 'react-bootstrap/esm/DropdownItem';
 import { CryptoList } from '../../constants/const';
+import axios from 'axios';
+import { getAPIKey } from '../../constants/storage';
+import _ from 'lodash'
 /**
 * @author
 * @class StockCryptoWatchlist
@@ -33,20 +36,26 @@ export class StockCryptoWatchlist extends Component {
     super(props);
     this.state = {
       typeIndexList: [], // index list
-      tickerIndexList: [], // text list
+      tickerIndexList: [], // index list
+      tickerStringList: [], // string list
+      prices:[],
     }
   }
 
   componentDidMount() {
-    let typeIndexList = [], tickerIndexList = [];
+    let typeIndexList = [], tickerIndexList = [], tickerStringList = [], prices = [];
     Array.from({length: 12}).map((_, index) => {
       typeIndexList.push(0);
       tickerIndexList.push(0);
+      tickerStringList.push('');
+      prices.push('');
     });
 
     this.setState({
       typeIndexList: typeIndexList,
-      tickerIndexList: tickerIndexList
+      tickerIndexList: tickerIndexList,
+      tickerStringList: tickerStringList,
+      prices: prices
     });
   }
 
@@ -95,13 +104,86 @@ export class StockCryptoWatchlist extends Component {
     return CryptoList[0];
   }
 
+  onTickerStringChange(index, e) {
+    let ticker = e.target.value;
+    let tickers = [];
+    this.state.tickerStringList.map((item, idx) => {
+      if(index == idx) {
+        item = ticker;
+      }
+      tickers.push(item);
+    })
+
+    this.setState({
+      tickerStringList: tickers
+    })
+  }
+
+  async onVerifyWatchList() {
+    let finnhubtoken = getAPIKey();
+    let prices = this.state.prices;
+
+    await Promise.all(
+      this.state.typeIndexList.map(async (type, index) => {
+        let quote, price;
+        if(type == 0) {
+          quote = this.state.tickerStringList[index];
+          quote = quote.toUpperCase();
+          if(quote !== '') {
+            let res = await axios.get(
+              `https://finnhub.io/api/v1/quote?symbol=${quote}&token=${finnhubtoken}`
+            );
+            price = res.data ? res.data.c : '';
+            console.log("RES =>", res);
+            prices[index] = price;
+          }
+        }
+        else {
+          quote = CryptoList[this.state.tickerIndexList[index]];
+          if(quote != 'NONE') {
+            let unix_time = Math.floor(Date.now() / 1000);
+            let from = unix_time - 70;
+            let to = unix_time - 10;
+            console.log("REQ =>", quote, unix_time, from, to);
+            let res = await axios.get(
+              `https://finnhub.io/api/v1/crypto/candle?symbol=BINANCE:${quote}USDT&resolution=1&from=${from}&to=${to}&token=${finnhubtoken}`
+            );
+            price = res.data && res.data.c ? res.data.c[res.data.c.length - 1] : '';
+            console.log("RES =>", res);
+            prices[index] = price;
+          }
+        }
+      }),
+    )
+      console.log("RES11 =>", prices)
+      this.setState({
+        prices: prices
+      })
+  }
+
+  getPriceStyle(index) {
+    if(this.state.prices.length > index && this.state.prices[index] !== '') {
+      if(_.includes(this.state.prices[index], 'invalid')) {
+        return {color: 'red'}
+      }
+      return {color: 'green'}
+    }
+
+    return {color: 'white'}
+  }
+
+  getPrice(index) {
+    return  this.state.prices.length > index && this.state.prices[index] !== ''
+    ? `$${this.state.prices[index]}` 
+    : ''
+  }
 
   render() {
     return(
       <Fragment>
         <div className='d-flex flex-column'>
           <SpaceBetweenDiv>
-            <CustomButton>
+            <CustomButton onClick={() => {this.onVerifyWatchList()}}>
               Verfiy and save
             </CustomButton>
             <CustomButton>
@@ -131,7 +213,7 @@ export class StockCryptoWatchlist extends Component {
                             {
                               typeList.map((item, typeIdx) => 
                                 <DropdownItem 
-                                  key={index} 
+                                  key={typeIdx} 
                                   eventKey={item.eKey} 
                                   onClick={(e) => this.onSelectTypeList(index, typeIdx, e)}
                                 >
@@ -164,10 +246,18 @@ export class StockCryptoWatchlist extends Component {
                               }
                           </DropdownButton>
                           :
-                          <input className='w-100'></input>
+                          <input className='w-100' 
+                          value={this.state.tickerStringList[index]}
+                          onChange={(e) => {
+                            this.onTickerStringChange(index, e)
+                          }}/>
                       }
                       </td>
-                      <td></td>
+                      <td style={this.getPriceStyle(index)}>
+                        {
+                          this.getPrice(index)
+                        }
+                      </td>
                     </tr>
                   })
                 }

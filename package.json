@@ -26,7 +26,9 @@
     "react-scripts": "5.0.1",
     "redux": "^4.2.0",
     "styled-components": "^5.3.5",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "yahoo-finance": "^0.3.7",
+    "yahoo-finance2": "^2.3.6"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -37,10 +39,7 @@
     "dev": "concurrently -k \"cross-env BROWSER=none npm start\" \"npm:electron\"",
     "electron": "wait-on tcp:3000 && electron .",
     "electron:build": "npm build && electron-builder -c.extraMetadata.main=build/electron.js",
-    "package": "electron-builder build --win -c.extraMetadata.main=build/electron.js --publish never",
-    "make-mac": "react-scripts build && electron-forge make --platform darwin",
-    "make-linux": "react-scripts build && electron-forge make --platform linux",
-    "make": "react-scripts build && electron-forge make"
+    "package": "electron-builder build --win -c.extraMetadata.main=build/electron.js --publish never"
   },
   "build": {
     "mac": {
@@ -71,46 +70,6 @@
       "owner": "Github Owner"
     }
   },
-  "config": {
-    "forge": {
-      "packagerConfig": {},
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "stock_trading_app"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {
-            "name": "stock_trading_app"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {
-            "name": "stock_trading_app"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-dmg",
-          "config": {
-            "name": "stock_trading_app",
-            "format": "ULFO"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin",
-            "linux",
-            "win32"
-          ]
-        }
-      ]
-    }
-  },
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -130,14 +89,9 @@
     ]
   },
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.63",
-    "@electron-forge/maker-deb": "^6.0.0-beta.63",
-    "@electron-forge/maker-dmg": "^6.0.0-beta.63",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.63",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.63",
-    "@electron-forge/maker-zip": "^6.0.0-beta.63",
     "concurrently": "^7.3.0",
     "electron": "^20.0.2",
+    "electron-builder": "^23.3.3",
     "electron-webpack": "^2.8.2",
     "wait-on": "^6.0.1"
   }
